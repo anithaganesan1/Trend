@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         IMAGE_NAME = 'aniganesan/trend:latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-id'

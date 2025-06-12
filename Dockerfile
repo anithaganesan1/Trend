@@ -1,14 +1,14 @@
-# Stage: Production web server for Vite app
+# Use lightweight nginx base image
 FROM nginx:alpine
 
-# Clear the default nginx content
-RUN rm -rf /usr/share/nginx/html/*
+# Copy custom nginx config
+COPY default.conf /etc/nginx/conf.d/default.conf
 
-# Copy the Vite build output into the nginx web folder
-COPY dist/ /usr/share/nginx/html/
+# Copy frontend build folder
+COPY dist/ /usr/share/nginx/html
 
-# Expose port 80
+# Expose default HTTP port
 EXPOSE 80
 
-# Start nginx
+# Run nginx
 CMD ["nginx", "-g", "daemon off;"]

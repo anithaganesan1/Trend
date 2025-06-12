@@ -3,25 +3,14 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'aniganesan/trend:latest'
-        DOCKER_CREDENTIALS_ID = 'dockerhub-id' // Make sure this exists in Jenkins credentials
+        DOCKER_CREDENTIALS_ID = 'dockerhub-id'
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Build Vite App') {
-            steps {
-                sh 'npm run build'
             }
         }
 
@@ -33,14 +22,20 @@ pipeline {
             }
         }
 
-
         stage('Push to DockerHub') {
             steps {
                 script {
-                withDockerRegistry([credentialsId: "${DOCKER_CREDENTIALS_ID}", url: "https://index.docker.io/v1/"]) {
-                     docker.image("${IMAGE_NAME}").push()
+                    withDockerRegistry([credentialsId: "${DOCKER_CREDENTIALS_ID}", url: "${DOCKER_REGISTRY}"]) {
+                        docker.image("${IMAGE_NAME}").push()
                     }
                 }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
             }
         }
     }

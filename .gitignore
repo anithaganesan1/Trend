@@ -1,3 +1,11 @@
-node_modules
-- dist
+# Ignore node modules
+node_modules/
+
+# Ignore Vite build output
+dist/
+
+# Ignore environment variable files
 *.env
+
+# Optional: Ignore system files/macOS
+.DS_Store

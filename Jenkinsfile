@@ -13,10 +13,22 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build App') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}", '.')
+                    docker.build("${IMAGE_NAME}")
                 }
             }
         }

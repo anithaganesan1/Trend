@@ -39,6 +39,7 @@ pipeline {
                 sh 'kubectl apply -f service.yml --validate=false'
             }
         }
+        
     }
 }
 

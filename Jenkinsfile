@@ -1,12 +1,9 @@
 pipeline {
     agent any
+
     environment {
         IMAGE_NAME = 'aniganesan/trend:latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-id'
-    }
-
-    triggers {
-        githubPush()
     }
 
     stages {
@@ -25,22 +22,21 @@ pipeline {
         stage('Build App') {
             steps {
                 sh 'npm run build'
-                // This must generate the dist/ folder
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}")
+                    docker.build("${IMAGE_NAME}", '.')
                 }
             }
         }
 
         stage('Push to DockerHub') {
             steps {
-                withDockerRegistry(credentialsId: "${DOCKER_CREDENTIALS_ID}", url: '') {
-                    script {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
                         docker.image("${IMAGE_NAME}").push()
                     }
                 }
@@ -49,8 +45,8 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yml'
+                sh 'kubectl apply -f k8s/deployment.yaml'
+                sh 'kubectl apply -f k8s/service.yml'
             }
         }
     }

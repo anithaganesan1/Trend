@@ -22,12 +22,14 @@ pipeline {
         }
 
         stage('Push to DockerHub') {
-            steps {
-                withDockerRegistry(credentialsId: "${DOCKER_CREDENTIALS_ID}", url: "https://index.docker.io/v1/") {
-                        docker.image("${IMAGE_NAME}").push()
-                    }
+    steps {
+        script {
+            docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                docker.image("${IMAGE_NAME}").push()
             }
         }
+    }
+}
 
         stage('Deploy to Kubernetes') {
             steps {

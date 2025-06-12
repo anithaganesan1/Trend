@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'aniganesan/trend:latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-id'
-        //KUBECONFIG_CREDENTIALS_ID = 'kubeconfig-id'  // optional, if using kubeconfig
+        KUBECONFIG_CREDENTIALS_ID = 'kubeconfig-id'  // optional, if using kubeconfig
     }
 
     triggers {

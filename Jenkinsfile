@@ -13,18 +13,6 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Build App') {
-            steps {
-                sh 'npm run build'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -46,7 +34,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f k8s/deployment.yaml'
-                sh 'kubectl apply -f k8s/service.yml'
+                sh 'kubectl apply -f k8s/service.yaml'
             }
         }
     }

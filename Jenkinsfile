@@ -4,24 +4,17 @@ pipeline {
     environment {
         IMAGE_NAME = 'aniganesan/trend:latest'
         DOCKER_CREDENTIALS_ID = 'dockerhub-id'
+       // KUBECONFIG_CREDENTIALS_ID = 'kubeconfig-id'  // optional, if using kubeconfig
+    }
+
+    triggers {
+        githubPush()
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Build App') {
-            steps {
-                sh 'npm run build'
             }
         }
 
@@ -35,8 +28,8 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                withDockerRegistry(credentialsId: "${DOCKER_CREDENTIALS_ID}", url: '') {
+                    script {
                         docker.image("${IMAGE_NAME}").push()
                     }
                 }
@@ -45,8 +38,14 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/deployment.yaml'
-                sh 'kubectl apply -f k8s/service.yaml'
+                // Optional: if using KUBECONFIG from Jenkins credentials
+                // withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIALS_ID}", variable: 'KUBECONFIG')]) {
+                //     sh 'kubectl apply -f deployment.yaml'
+                //     sh 'kubectl apply -f service.yml'
+                // }
+
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yml'
             }
         }
     }

@@ -10,6 +10,5 @@ COPY dist/ /usr/share/nginx/html
 # Expose default HTTP port
 EXPOSE 3000
 
-
 # Run nginx
 CMD ["nginx", "-g", "daemon off;"]

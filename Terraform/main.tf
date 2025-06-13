@@ -14,7 +14,6 @@ data "aws_subnets" "default" {
     values = [data.aws_vpc.default.id]
   }
 }
-
 # Generate a random suffix to avoid SG name conflict
 resource "random_id" "suffix" {
   byte_length = 2

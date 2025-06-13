@@ -8,7 +8,7 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 COPY dist/ /usr/share/nginx/html
 
 # Expose default HTTP port
-EXPOSE 80
+EXPOSE 3000
 
 # Run nginx
 CMD ["nginx", "-g", "daemon off;"]
